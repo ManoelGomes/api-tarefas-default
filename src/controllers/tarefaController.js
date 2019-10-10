@@ -40,15 +40,21 @@ exports.listarPorId = (req, res) =>{
 
 exports.inserir = (req, res) => {
 
-  const tarefa = {}
-  tarefa.descricao = req.body.descricao
-  tarefa.data = req.body.data
-  tarefa.realizado = req.body.realizado
-  tarefa.categoria_id = req.body.categoria_id
+  // const tarefa = {}
+  // tarefa.descricao = req.body.descricao
+  // tarefa.data = req.body.data
+  // tarefa.realizado = req.body.realizado
+  // tarefa.categoria_id = req.body.categoria_id
+
+  const tarefa = []
+  tarefa.push(req.body.descricao)
+  tarefa.push(req.body.data)
+  tarefa.push(req.body.realizado)
+  tarefa.push(req.body.categoria_id)
 
    const query = "insert into tarefas (descricao,data,realizado,categoria_id) values (?,?,?,?)"
 
-   conexao.query(query, [tarefa.descricao, tarefa.data, tarefa.realizado, tarefa.categoria_id], (err, rows) => {
+   conexao.query(query, tarefa, (err, rows) => {
      if(err){
        res.status(500)
        res.json({"message": "Internal Server Error"})
@@ -57,5 +63,51 @@ exports.inserir = (req, res) => {
        res.json({"message":"Tarefa criada com sucesso", "id":rows.insertId})
      }
    })
+}
+
+exports.alterar = (req, res) =>{
+
+  const tarefa = []
+  tarefa.push(req.body.descricao)
+  tarefa.push(req.body.data)
+  tafefa.push(req.body.realizado)
+  tarefa.push(req.body.categoria_id)
+  tarefa.push(req.params.id)
+
+  const query = "update tarefas set descricao = ?, data = ?, realizado = ?, categoria_id = ? where id = ?"
+
+  conexao.query(query, tarefa, (err, rows) => {
+    if(err){
+      res.status(500)
+      res.json({"message":"Internal Server Error"})
+    }else if(rows.affectedRows > o){
+      res.status(202)
+      res.json({"message":"Tarefa alterada", "id":req.params.id})
+    }else{
+      res.status(404)
+      res.json({"message":"Não encontrado"})
+    }
+  })
+}
+
+exports.deletar = (req, res) =>{
+
+  const id = req.params.id
+  const query = "delete from tarefas where id = ?"
+
+  conexao.query(query, [id], (err, rows) => {
+    if(err){
+      res.status(500)
+      res.json({"message":"Internal Server Error"})
+      console.log(err)
+    }else if(rows.affectedRows > 0){
+      res.status(200)
+      res.json({"message": "Excluido com sucesso"})
+    }else{
+      res.status(404)
+      res.json({"messagem":"Nenhum id encontrado"})
+    }
+  })
+  
 }
 
