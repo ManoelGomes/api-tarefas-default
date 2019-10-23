@@ -45,7 +45,7 @@ exports.verifica = (req, res, next) => {
     jwt.verify(token, process.env.SECRET, (err, decode) =>{
       if(err){
         res.status(403)
-        res.send({"auth":false,"message":"falhe de autenticação"})
+        res.send({"auth":false,"message":"falha de autenticação"})
       }else{
         next()
       }

@@ -1,4 +1,5 @@
 const conexao = require('../config/conexao')
+const { validationResult} = require('express-validator')
 
 exports.listar = (req, res) => {
   const query = "select * from tarefas"
@@ -20,6 +21,11 @@ exports.listar = (req, res) => {
 
 
 exports.listarPorId = (req, res) =>{
+
+  const erros =  validationResult(req)
+  if(!erros.isEmpty()){
+    return res.status(422).json({"erros": erros.array()})
+  }else{
   const id = req.params.id
   const query = "select * from tarefas where id = ?"
 
@@ -36,17 +42,23 @@ exports.listarPorId = (req, res) =>{
       res.json({"messagem":"Nenhum id encontrado"})
     }
   })
+  }
 }
 
-exports.inserir = (req, res) => {
+
 
   // const tarefa = {}
   // tarefa.descricao = req.body.descricao
   // tarefa.data = req.body.data
   // tarefa.realizado = req.body.realizado
   // tarefa.categoria_id = req.body.categoria_id
+exports.inserir = (req, res) => {
 
-  const tarefa = []
+  const erros =  validationResult(req)
+  if(!erros.isEmpty()){
+    return res.status(422).json({"erros": erros.array()})
+  }else{
+    const tarefa = []
   tarefa.push(req.body.descricao)
   tarefa.push(req.body.data)
   tarefa.push(req.body.realizado)
@@ -63,11 +75,17 @@ exports.inserir = (req, res) => {
        res.json({"message":"Tarefa criada com sucesso", "id":rows.insertId})
      }
    })
+  }
+  
 }
 
 exports.alterar = (req, res) =>{
 
-  const tarefa = []
+  const erros =  validationResult(req)
+  if(!erros.isEmpty()){
+    return res.status(422).json({"erros": erros.array()})
+  }else{
+    const tarefa = []
   tarefa.push(req.body.descricao)
   tarefa.push(req.body.data)
   tafefa.push(req.body.realizado)
@@ -88,11 +106,16 @@ exports.alterar = (req, res) =>{
       res.json({"message":"Não encontrado"})
     }
   })
+  }
+  
 }
 
 exports.deletar = (req, res) =>{
-
-  const id = req.params.id
+  const erros =  validationResult(req)
+  if(!erros.isEmpty()){
+    return res.status(422).json({"erros": erros.array()})
+  }else{
+    const id = req.params.id
   const query = "delete from tarefas where id = ?"
 
   conexao.query(query, [id], (err, rows) => {
@@ -108,6 +131,6 @@ exports.deletar = (req, res) =>{
       res.json({"messagem":"Nenhum id encontrado"})
     }
   })
-  
+  }
 }
 
